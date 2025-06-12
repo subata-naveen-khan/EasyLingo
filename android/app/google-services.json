@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "535234433807",
+    "project_id": "easylingo-4f149",
+    "storage_bucket": "easylingo-4f149.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535234433807:android:65f63a94a0d72bf695e47a",
+        "android_client_info": {
+          "package_name": "com.example.easylingo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMgLfGY5we_AzE-Xu3jLnXXGoLLcdRF34"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

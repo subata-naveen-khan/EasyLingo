@@ -15,6 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_bloc: 
+  firebase_core: ^3.14.0
 
 dev_dependencies:
   flutter_test:
