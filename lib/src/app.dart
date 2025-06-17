@@ -1,12 +1,16 @@
-import 'package:easylingo/src/screens/flashcard_screen.dart';
-import 'package:easylingo/src/screens/profile_screen.dart';
-import 'package:easylingo/src/screens/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'routes/app_routes.dart';
+import 'screens/translation_screen.dart';
+import 'screens/learn_screen.dart';
+import 'screens/community_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/flashcard_screen.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
+import 'services/navigation_service.dart';
 
 /// The Widget that configures your application.
 class EasyLingoApp extends StatelessWidget {
@@ -23,6 +27,7 @@ class EasyLingoApp extends StatelessWidget {
       listenable: settingsController,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp(
+          navigatorKey: NavigationService.navigatorKey,
           restorationScopeId: 'app',
 
           localizationsDelegates: const [
@@ -37,8 +42,11 @@ class EasyLingoApp extends StatelessWidget {
           onGenerateTitle: (BuildContext context) =>
               AppLocalizations.of(context)!.appTitle,
 
-          theme: ThemeData(),
-          darkTheme: ThemeData.dark(),
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData.dark(useMaterial3: true),
           themeMode: settingsController.themeMode,
 
           onGenerateRoute: (RouteSettings routeSettings) {
@@ -46,13 +54,20 @@ class EasyLingoApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
-                  case FlashcardScreen.routeName: 
-                    return const FlashcardScreen();
-                  case ProfileScreen.routeName:
+                  case AppRoutes.translation:
+                    return const TranslationScreen();
+                  case AppRoutes.learn:
+                    return const LearnScreen();
+                  case AppRoutes.community:
+                    return const CommunityScreen();
+                  case AppRoutes.profile:
                     return const ProfileScreen();
-                  case SettingsView.routeName:
+                  case AppRoutes.settings:
+                    return SettingsView(controller: settingsController);
+                  case AppRoutes.flashcards:
+                    return const FlashcardScreen();
                   default:
-                    return const HomeScreen();
+                    return const TranslationScreen();
                 }
               },
             );
