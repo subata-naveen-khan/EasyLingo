@@ -3,11 +3,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'routes/app_routes.dart';
+import 'screens/login_screen.dart';
+import 'screens/signup_screen.dart';
 import 'screens/translation_screen.dart';
 import 'screens/learn_screen.dart';
 import 'screens/community_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/flashcard_screen.dart';
+import 'widgets/auth_wrapper.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 import 'services/navigation_service.dart';
@@ -49,11 +52,17 @@ class EasyLingoApp extends StatelessWidget {
           darkTheme: ThemeData.dark(useMaterial3: true),
           themeMode: settingsController.themeMode,
 
+          home: const AuthWrapper(),
+          
           onGenerateRoute: (RouteSettings routeSettings) {
             return MaterialPageRoute<void>(
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
+                  case AppRoutes.login:
+                    return const LoginScreen();
+                  case AppRoutes.signup:
+                    return const SignUpScreen();
                   case AppRoutes.translation:
                     return const TranslationScreen();
                   case AppRoutes.learn:
@@ -67,7 +76,7 @@ class EasyLingoApp extends StatelessWidget {
                   case AppRoutes.flashcards:
                     return const FlashcardScreen();
                   default:
-                    return const TranslationScreen();
+                    return const AuthWrapper();
                 }
               },
             );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../routes/app_routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 
 class Flashcard {
   final int id;
@@ -51,7 +52,19 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
 
   Future<void> fetchFlashcards() async {
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:3001/flashcards'));
+      print('Attempting to fetch flashcards...');
+      final response = await http.get(
+        Uri.parse('http://10.0.2.2:3001/api/flashcards'),
+      ).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException('The request timed out');
+        },
+      );
+      
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
@@ -60,13 +73,14 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
         });
       } else {
         setState(() {
-          error = 'Failed to load flashcards';
+          error = 'Failed to load flashcards: ${response.statusCode}';
           isLoading = false;
         });
       }
     } catch (e) {
+      print('Error fetching flashcards: $e');
       setState(() {
-        error = 'Error connecting to server';
+        error = 'Error connecting to server: $e';
         isLoading = false;
       });
     }

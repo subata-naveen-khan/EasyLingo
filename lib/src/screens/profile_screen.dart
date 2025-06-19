@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../routes/app_routes.dart';
+import '../services/auth_service.dart';
 import '../services/navigation_service.dart';
 import '../widgets/main_navigation.dart';
 
@@ -10,6 +12,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authService = AuthService();
+    final user = authService.currentUser;
     return MainNavigation(
       currentIndex: 3,
       child: SingleChildScrollView(
@@ -17,22 +21,27 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             // Profile Header
-            const CircleAvatar(
+            CircleAvatar(
               radius: 50,
-              child: Icon(Icons.person, size: 50),
+              backgroundImage: user?.photoURL != null 
+                ? NetworkImage(user!.photoURL!)
+                : null,
+              child: user?.photoURL == null 
+                ? const Icon(Icons.person, size: 50)
+                : null,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Guest User',
-              style: TextStyle(
+            Text(
+              user?.displayName ?? 'Guest User',
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Not signed in',
-              style: TextStyle(
+            Text(
+              user?.email ?? 'Not signed in',
+              style: const TextStyle(
                 color: Colors.grey,
               ),
             ),
@@ -41,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
             // Profile Options
             _buildProfileSection(
               'Account',
-              [
+              user == null ? [
                 _buildProfileTile(
                   'Sign In',
                   Icons.login,
@@ -50,7 +59,27 @@ class ProfileScreen extends StatelessWidget {
                 _buildProfileTile(
                   'Create Account',
                   Icons.person_add,
-                  () => NavigationService.navigateTo(AppRoutes.register),
+                  () => NavigationService.navigateTo(AppRoutes.signup),
+                ),
+              ] : [
+                _buildProfileTile(
+                  'Translation History',
+                  Icons.history,
+                  () {
+                    // TODO: Navigate to translation history
+                  },
+                ),
+                _buildProfileTile(
+                  'My Flashcards',
+                  Icons.quiz,
+                  () => NavigationService.navigateTo(AppRoutes.flashcards),
+                ),
+                _buildProfileTile(
+                  'Sign Out',
+                  Icons.logout,
+                  () async {
+                    await authService.signOut();
+                  },
                 ),
               ],
             ),
